@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="normalize.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<!-- --------------- BODY ------------------------- -->
+
+<body>
+    <!-- ------------- MODAL ---------------- -->
+    <div class="main_wrap">
+        <div class="background_wrap">
+            <div class="modal">
+                <h3>Input yor name</h3>
+                <hr>
+                <input type="text">
+            </div>
+        </div>
+        <!-- ------- MAIN CONTAINER --------- -->
+        <div class="main_container">
+            <aside>
+                <h3 class="title_aside">Chat Socket.IO</h3>
+                <hr>
+                <ul id="aside_users">
+                    <li class="aside_users-title">Users online <span class="badge" id="num_par">12</span> </li>
+                </ul>
+            </aside>
+            <div class="main_container_chat">
+                <form class="form_message" action="">
+                    <textarea name="" id="input_message" rows="7" placeholder="Write a message"></textarea>
+                    <button id="send_message">Send</button>
+                </form>
+                <div class="box_shadow"></div>
+                <ul id="messages"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- --------------- SCRIPT ------------------------- -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>
+        window.onload = function() {
+            $(function() {
+                const messages = document.getElementById('messages');
+                var connectId;
+
+                function scrollBottom() {
+                    var scrollHeight = Math.max(
+                        messages.scrollHeight,
+                        messages.offsetHeight,
+                        messages.clientHeight
+                    );
+                    if (scrollHeight > messages.clientHeight) {
+                        messages.scrollTop = scrollHeight - messages.clientHeight
+                    }
+                }
+                scrollBottom();
+
+                var socket = io();
+                socket.on('connect', function() {
+                    socket.on('get id', function(socketId) {
+                        connectId = socketId;
+                    })
+                });
+
+                $('form').submit(function() {
+                    var msgText = $('#input_message').val();
+                    socket.emit('chat message', {
+                        msgText: msgText,
+                        clientID: connectId
+                    });
+                    $('#input_message').val('');
+                    return false;
+                });
+                socket.on('chat message', function(msgData) {
+                    if (msgData.clientID == connectId) {
+                        $('#messages').append($('<li class="author"></li>').text(msgData.msgText));
+                    } else {
+                        $('#messages').append($('<li></li>').text(msgData.msgText));
+                    }
+                    scrollBottom()
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
