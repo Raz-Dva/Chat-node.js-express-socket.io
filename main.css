@@ -165,14 +165,25 @@ button:focus {
     font-family: monospace;
     font-size: 16px;
     line-height: 1.2;
-    flex-grow: 1;
+    /* flex-grow: .8; */
+    width: 77%;
     background-color: #e5e5e5;
 }
 
+#messages .author .message_user-name {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
 #messages .message_user-name {
-    flex-basis: 80px;
+    /* flex-basis: 80px; */
+    width: 10%;
     text-align: center;
     margin-right: 10px;
+}
+
+#messages .author {
+    justify-content: flex-end;
 }
 
 #messages .author .message_user-text {
@@ -211,8 +222,8 @@ button:focus {
 
 .aside_users-title {
     padding: 10px;
-    padding: 22px 20px;
-    margin-bottom: 20px;
+    padding: 5px 20px;
+    /* margin-bottom: 20px; */
     font-size: 16px;
 }
 
@@ -244,10 +255,23 @@ button:focus {
     margin: 0 auto;
 }
 
-.message_user-img strong {
+.message_user-name strong {
     text-overflow: ellipsis;
     display: block;
     overflow: hidden;
+}
+
+.user_name {
+    padding: 22px 20px 16px;
+}
+
+#user-name {
+    color: #fde900;
+}
+
+#aside_users>li {
+    line-height: 1;
+    margin: 8px 0;
 }
 
 
