@@ -1,7 +1,7 @@
 # messanger
 Chat for real-time messaging
 
-### Command
+### Commands
 - git clone htttp:/...
 - npm install
 - nodemon index
