@@ -1,194 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Socket.IO chat</title>
-    <link rel="stylesheet" href="normalize.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="main.css">
-</head>
-<!-- --------------- BODY ------------------------- -->
-
-<body>
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <!-- --------------- BODY ------------------------- -->
+  <body>
     <div class="main_wrap">
-        <!-- ------------- MODAL ---------------- -->
-
-        <div class="background_wrap">
-            <div class="modal_authorization">
-                <!-- <button class="modal_autorization-close">&#10006;</button> -->
-                <h3 class="modal_autorization-title">Input yor name</h3>
-                <hr>
-                <input type="text" id="authorize-input" class="modal_autorization-input" placeholder="name">
-                <button id="authorize-btn" class="btn_send-name">Log in</button>
-                <p class="hint"></p>
-            </div>
+      <!-- ------------- MODAL ---------------- -->
+      <div class="background_wrap">
+        <div class="modal_authorization">
+          <!-- <button class="modal_autorization-close">&#10006;</button> -->
+          <h3 class="modal_autorization-title">Input yor name</h3>
+          <hr />
+          <input
+            type="text"
+            id="authorize-input"
+            class="modal_autorization-input"
+            placeholder="name"
+          />
+          <button id="authorize-btn" class="btn_send-name">Log in</button>
+          <p class="hint"></p>
         </div>
-        <!-- ------- MAIN CONTAINER --------- -->
-        <div class="main_container">
+      </div>
+      <!-- ------- MAIN CONTAINER --------- -->
+      <div class="main_container">
+        <aside>
+          <h3 class="title_aside">Chat Socket.IO</h3>
+          <hr />
+          <p class="user_name">Your name <span id="user-name"></span></p>
 
-
-            <aside>
-
-                <h3 class="title_aside">Chat Socket.IO</h3>
-                <hr>
-                <p class="user_name">Your name <span id="user-name"></span></p>
-
-                <p class="aside_users-title">Users online <span class="badge" id="num_par"></span></p>
-                <ul id="aside_users"></ul>
-            </aside>
-            <div class="main_container_chat">
-                <form class="form_message" action="">
-                    <textarea name="" id="input_message" rows="7" placeholder="Write a message"></textarea>
-                    <button id="send_message">Send</button>
-                </form>
-                <div class="box_shadow"></div>
-                <ul id="messages">
-                    <li>
-                        <p class="message_user-name">
-                            <img class="message_user-img" src="/img/user.svg" alt="">
-                            <strong>Username</strong>
-                        </p>
-                        <p class="message_user-text">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor nostrum quaerat modi facere vero blanditiis, rem optio veniam numquam reiciendis suscipit aperiam sed temporibus nihil consequatur explicabo? Impedit, earum obcaecati!
-                        </p>
-
-                    </li>
-                </ul>
-            </div>
+          <p class="aside_users-title">
+            Users online <span class="badge" id="num_par"></span>
+          </p>
+          <ul id="aside_users"></ul>
+        </aside>
+        <div class="main_container_chat">
+          <form class="form_message" action="">
+            <textarea
+              name=""
+              id="input_message"
+              rows="7"
+              placeholder="Write a message"
+            ></textarea>
+            <button id="send_message">Send</button>
+          </form>
+          <div class="box_shadow"></div>
+          <ul id="messages">
+            <li>
+              <p class="message_user-name">
+                <img class="message_user-img" src="/img/user.svg" alt="" />
+                <strong>Username</strong>
+              </p>
+              <p class="message_user-text">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor
+                nostrum quaerat modi facere vero blanditiis, rem optio veniam
+                numquam reiciendis suscipit aperiam sed temporibus nihil
+                consequatur explicabo? Impedit, earum obcaecati!
+              </p>
+            </li>
+          </ul>
         </div>
+      </div>
     </div>
-
-
-    <!-- --------------- SCRIPT ------------------------- -->
+    <!-- --------------- SCRIPTS ------------------------- -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function() {
-                const messages = document.getElementById('messages');
-                // const nameUser;                    
-                const socket = io();
-                var userInfo = new Object(),
-                    hint = $('.hint'),
-                    arrUsers;
-                //close modal
-                // ------ scroll chat to bottom ------
-                function scrollBottom() {
-                    var scrollHeight = Math.max(
-                        messages.scrollHeight,
-                        messages.offsetHeight,
-                        messages.clientHeight
-                    );
-                    if (scrollHeight > messages.clientHeight) {
-                        messages.scrollTop = scrollHeight - messages.clientHeight
-                    }
-                };
-
-                // -------- get users -------
-                function getUsers(allUsers) {
-                    // console.log(allUsers);
-                    $('#num_par').text(allUsers.length);
-                    //   console.log(allUsers.length);
-                    $('#aside_users').empty();
-                    allUsers.forEach(function(item, i, arr) {
-                        // console.log(item);
-                        $('#aside_users').append($('<li></li>').text(item.name))
-                    });
-                }
-
-                // ------ validation user name -----------
-                function TestLogin1(login) {
-                    if (/^[a-zA-Z1-9]+$/.test(login) === false) {
-                        hint.text('В логине должны быть только латинские буквы');
-                        return false;
-                    }
-                    if (login.length < 4 || login.length > 20) {
-                        hint.text('В логине должен быть от 4 до 20 символов');
-                        return false;
-                    }
-                    if (parseInt(login.substr(0, 1))) {
-                        hint.text('Логине должен начинаться с буквы');
-                        return false;
-                    }
-                    return true;
-                }
-
-                scrollBottom();
-
-                // ------  get id -----------
-                // socket.on('connect', function() {
-                //     socket.on('get id', function(socketId) {
-                //         userInfo.connectId = socketId;
-                //         // console.log(socketId.y)
-                //     });
-
-                // });
-
-                // ------ submit msg  -----------
-                $('form').submit(function() {
-                    var msgText = $('#input_message').val();
-                    socket.emit('chat message', {
-                        msgText: msgText,
-                        id: userInfo.id,
-                        name: userInfo.name
-                    });
-                    $('#input_message').val('');
-                    return false;
-                });
-
-                // ------ get msg  -----------
-                socket.on('chat message', function(msgData) {
-                    // console.log(msgData)
-                    // console.log(userInfo)
-
-                    if (msgData.id == userInfo.id) {
-                        $('#messages').append($('<li  class="author"><p class="message_user-text">' + msgData.msgText + '</p> <p class="message_user-name"><img class="message_user-img" src="/img/user.svg" alt=""><strong>' + msgData.name + '</strong></p></li>')
-                            // .text(msgData.msgText));
-                        )
-                    } else {
-                        $('#messages').append($('<li> <p class="message_user-name"><img class="message_user-img" src="/img/user.svg" alt=""><strong>' + msgData.name + '</strong></p><p class="message_user-text">' + msgData.msgText + '</p></li>')
-                            // .text(msgData.msgText));
-                        )
-                    }
-                    scrollBottom()
-                });
-
-                // -------- load users ----
-                socket.on('load users', function(users) {
-                    arrUsers = users;
-                    getUsers(users);
-                });
-
-                // --------success authorization  ----
-                socket.on('succes authorization', function(user) {
-                    userInfo = user;
-                    $('#user-name').text(userInfo.name);
-                    $('.background_wrap').hide();
-                })
-
-                // -------- failed authorization ----
-                socket.on('failed authorization', function() {
-                    $('#authorize-input').addClass('invalid');
-                    hint.text('Already exist');
-
-                });
-
-                // --------- autorization ----------
-                $('#authorize-btn').click(function() {
-                    // console.log(this)
-                    var valAuthorize = $('#authorize-input').val()
-                    if (TestLogin1(valAuthorize)) {
-                        $('#authorize-input').removeClass('invalid');
-                        // console.log('valid')
-                        socket.emit('authorize', valAuthorize)
-
-                    } else {
-                        $('#authorize-input').addClass('invalid')
-                    }
-
-                })
-            }) //document ready
-            // 1)cоздать массив id->name
-    </script>
-</body>
-
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/main.js"></script>    
+  </body>
 </html>
