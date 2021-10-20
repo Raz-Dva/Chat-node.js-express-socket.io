@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
     <title>Socket.IO chat</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <link rel="stylesheet" href="/css/normalize.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600&display=swap"
@@ -30,7 +40,10 @@
       </div>
       <!-- ------- MAIN CONTAINER --------- -->
       <div class="main_container">
-        <aside>
+        <aside class="aside-container" id="aside-panel">
+          <button class="show-aside" id="btn-show-aside">
+            <span class="show-aside_triangle"></span>
+          </button>
           <h3 class="title_aside">Chat Socket.IO</h3>
           <hr />
           <p class="user_name">Your name <span id="user-name"></span></p>
@@ -51,8 +64,8 @@
             <button id="send_message">Send</button>
           </form>
           <div class="box_shadow"></div>
-          <ul id="messages">
-            <li>
+          <div id="messages">
+            <div>
               <p class="message_user-name">
                 <img class="message_user-img" src="/img/user.svg" alt="" />
                 <strong>Username</strong>
@@ -63,8 +76,8 @@
                 numquam reiciendis suscipit aperiam sed temporibus nihil
                 consequatur explicabo? Impedit, earum obcaecati!
               </p>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>

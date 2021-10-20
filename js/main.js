@@ -1,9 +1,15 @@
 $(document).ready(function () {
-    const messages = document.getElementById("messages");
+    const messages = $("#messages")[0];
     const socket = io();
     var userInfo = new Object(),
         hint = $(".hint"),
         arrUsers;
+
+    // ------ show-hide aside panel ------
+    $("#btn-show-aside").click(function () {
+        $('#aside-panel').toggleClass("aside-container_open")
+    })
+    
     // ------ scroll chat to bottom ------
     function scrollBottom() {
         var scrollHeight = Math.max(
@@ -56,21 +62,21 @@ $(document).ready(function () {
         if (msgData.id == userInfo.id) {
             $("#messages").append(
                 $(
-                    '<li  class="author"><p class="message_user-text">' +
+                    '<div class="author"><p class="message_user-text">' +
                     msgData.msgText +
                     '</p> <p class="message_user-name"><img class="message_user-img" src="/img/user.svg" alt=""><strong>' +
                     msgData.name +
-                    "</strong></p></li>"
+                    "</strong></p></div>"
                 )
             );
         } else {
             $("#messages").append(
                 $(
-                    '<li> <p class="message_user-name"><img class="message_user-img" src="/img/user.svg" alt=""><strong>' +
+                    '<div> <p class="message_user-name"><img class="message_user-img" src="/img/user.svg" alt=""><strong>' +
                     msgData.name +
                     '</strong></p><p class="message_user-text">' +
                     msgData.msgText +
-                    "</p></li>"
+                    "</p></div>"
                 )
             );
         }
@@ -105,3 +111,5 @@ $(document).ready(function () {
         }
     });
 });
+
+
